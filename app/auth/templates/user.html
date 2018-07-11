@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h2>User: {{ user.username }}</h2><br/>
+    <div class="row">
+        <div class="col-md-4">
+            First name: {{ user.first_name }}<br/>
+            Last name: {{user.last_name }}<br/>
+            Last seen: {{ user.last_seen }}<br/>
+            {% if user == current_user %}
+            <br/>
+            <p><a href="{{ url_for('auth.edit_profile') }}">Edit your profile</a></p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
