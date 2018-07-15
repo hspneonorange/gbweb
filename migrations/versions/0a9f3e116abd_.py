@@ -1,8 +1,8 @@
-"""Initial deploy (after nuke)
+"""empty message
 
-Revision ID: 8472432ab52c
+Revision ID: 0a9f3e116abd
 Revises: 
-Create Date: 2018-07-08 16:49:30.977569
+Create Date: 2018-07-11 16:57:41.927630
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '8472432ab52c'
+revision = '0a9f3e116abd'
 down_revision = None
 branch_labels = None
 depends_on = None

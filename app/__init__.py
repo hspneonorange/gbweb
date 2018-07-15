@@ -37,8 +37,8 @@ app.register_blueprint(errors_bp, url_prefix='/errors')
 from app.auth import bp as auth_bp
 app.register_blueprint(auth_bp, url_prefix='/auth')
 
-#from app.gb import bp as gb_bp
-#app.register_blueprint(gb_bp)
+from app.api import bp as api_bp
+app.register_blueprint(api_bp, url_prefix='/api')
 
 from app import routes, gbforms
 
