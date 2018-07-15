@@ -6,12 +6,12 @@ from app.api.errors import bad_request
 from app.api.auth import token_auth
 
 @bp.route('/product_series/<int:id>', methods=['GET'])
-#@token_auth.login_required
+@token_auth.login_required
 def get_product_series(id):
     return jsonify(ProductSeries.query.get_or_404(id).to_dict())
 
 @bp.route('/product_series', methods=['GET'])
-#@token_auth.login_required
+@token_auth.login_required
 def get_series():
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
@@ -19,7 +19,7 @@ def get_series():
     return jsonify(data)
 
 @bp.route('/product_series', methods=['POST'])
-#@token_auth.login_required
+@token_auth.login_required
 def create_product_series():
     data = request.get_json() or {}
     if 'name' not in data:
@@ -36,7 +36,7 @@ def create_product_series():
     return response
 
 @bp.route('/product_series/<int:id>', methods=['PUT'])
-#@token_auth.login_required
+@token_auth.login_required
 def update_product_series(id):
     product_series = ProductSeries.query.get_or_404(id)
     data = request.get_json() or {}
