@@ -92,7 +92,7 @@ class User(PaginatedAPIMixin, UserMixin, db.Model):
             return None
         return user
 
-class Event(db.Model):
+class Event(PaginatedAPIMixin, db.Model):
     """Represents an industry event where sales may occur"""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), index=True, nullable=False)
@@ -104,6 +104,23 @@ class Event(db.Model):
     def __repr__(self):
         return '<Event {}: {}, {} @ {}-{}>'.format(self.name, self.city, \
             self.state_abbr, self.start_date, self.end_date)
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'name': self.name,
+            'start_date': self.start_date.isoformat() + 'Z',
+            'end_date': self.end_date.isoformat() + 'Z',
+            'city': self.city,
+            'state_abbr': self.state_abbr,
+            '_links': {
+                'self': url_for('api.get_event', id=self.id)
+            }
+        }
+        return data
+    def from_dict(self, data):
+        for field in ['name', 'start_date', 'end_date', 'city', 'state_abbr']:
+            if field in data:
+                setattr(self, field, data[field])
 
 class Sale(db.Model):
     """Models a 'sale' as an abstract entity, to which one or more SaleLineItems are attached"""
@@ -117,21 +134,47 @@ class Sale(db.Model):
     def __repr__(self):
         return '<Sale {}, {}>'.format(self.id, self.date)
 
-class ProductType(db.Model):
+class ProductType(PaginatedAPIMixin, db.Model):
     """The type of a product - e.g., button, earring, etc."""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), index=True, nullable=False)
     products = db.relationship('Product', backref='product_type', lazy='dynamic')
     def __repr__(self):
         return '<ProductType {}>'.format(self.name)
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'name': self.name,
+            '_links': {
+                'self': url_for('api.get_product_type', id=self.id)
+            }
+        }
+        return data
+    def from_dict(self, data):
+        for field in ['name']:
+            if field in data:
+                setattr(self, field, data[field])
 
-class ProductSeries(db.Model):
+class ProductSeries(PaginatedAPIMixin, db.Model):
     """The series a product is assocaited with - e.g., Sailor Moon, Yu-Gi-Oh!, etc."""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), index=True, nullable=False)
     products = db.relationship('Product', backref='product_series', lazy='dynamic')
     def __repr__(self):
         return '<ProductSeries {}>'.format(self.name)
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'name': self.name,
+            '_links': {
+                'self': url_for('api.get_product_series', id=self.id)
+            }
+        }
+        return data
+    def from_dict(self, data):
+        for field in ['name']:
+            if field in data:
+                setattr(self, field, data[field])
 
 class Product(db.Model):
     """The intersection of a ProductType and ProductSeries; has its own stock count and price"""
