@@ -1,8 +1,8 @@
-"""empty message
+"""Initial deploy (after nuke)
 
-Revision ID: 0a9f3e116abd
+Revision ID: 92da77bae7e5
 Revises: 
-Create Date: 2018-07-11 16:57:41.927630
+Create Date: 2018-07-14 19:36:02.279116
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0a9f3e116abd'
+revision = '92da77bae7e5'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -51,9 +51,12 @@ def upgrade():
     sa.Column('username', sa.String(length=50), nullable=False),
     sa.Column('password_hash', sa.String(length=128), nullable=False),
     sa.Column('last_seen', sa.DateTime(), nullable=False),
+    sa.Column('token', sa.String(length=32), nullable=True),
+    sa.Column('token_expiration', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('username')
     )
+    op.create_index(op.f('ix_user_token'), 'user', ['token'], unique=True)
     op.create_table('product',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('product_type_id', sa.Integer(), nullable=False),
@@ -102,6 +105,7 @@ def downgrade():
     op.drop_index(op.f('ix_product_sku'), table_name='product')
     op.drop_index(op.f('ix_product_name'), table_name='product')
     op.drop_table('product')
+    op.drop_index(op.f('ix_user_token'), table_name='user')
     op.drop_table('user')
     op.drop_index(op.f('ix_product_type_name'), table_name='product_type')
     op.drop_table('product_type')

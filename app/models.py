@@ -105,7 +105,7 @@ class Event(db.Model):
         return '<Event {}: {}, {} @ {}-{}>'.format(self.name, self.city, \
             self.state_abbr, self.start_date, self.end_date)
 
-class Sale(db.Model):
+class Sale(PaginatedAPIMixin, db.Model):
     """Models a 'sale' as an abstract entity, to which one or more SaleLineItems are attached"""
     id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
@@ -116,6 +116,25 @@ class Sale(db.Model):
     saleslineitems = db.relationship('SaleLineItem', backref='sale', lazy='dynamic')
     def __repr__(self):
         return '<Sale {}, {}>'.format(self.id, self.date)
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'event_id': self.event_id,
+            'user_id': self.event_id,
+            'date': self.date,
+            'discount': self.discount,
+            'notes': self.notes,
+            '_links': {
+                'self': url_for('api.get_sale', id=self.id),
+                'event': url_for('api.events', id=self.event_id),
+                'user': url_for('api.users', id=self.user_id)
+            }
+        }
+        return data
+    def from_dict(self, data):
+        for field in ['event_id', 'user_id', 'date', 'discount', 'notes']:
+            if field in data:
+                setattr(self, field, data[field])
 
 class ProductType(db.Model):
     """The type of a product - e.g., button, earring, etc."""
@@ -133,7 +152,7 @@ class ProductSeries(db.Model):
     def __repr__(self):
         return '<ProductSeries {}>'.format(self.name)
 
-class Product(db.Model):
+class Product(PaginatedAPIMixin, db.Model):
     """The intersection of a ProductType and ProductSeries; has its own stock count and price"""
     id = db.Column(db.Integer, primary_key=True)
     product_type_id = db.Column(db.Integer, db.ForeignKey('product_type.id'), nullable=False)
@@ -147,12 +166,50 @@ class Product(db.Model):
     saleslineitems = db.relationship('SaleLineItem', backref='product', lazy='dynamic')
     def __repr__(self):
         return '<Product {}, ${}; {} in stock>'.format(self.name, self.price, self.stock)
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'product_type_id': self.product_type_id,
+            'product_series_id': self.product_series_id,
+            'name': self.name,
+            'sku': self.sku,
+            'description': self.description,
+            'notes': self.notes,
+            'stock': self.stock,
+            'price': self.price,
+            '_links': {
+                'self': url_for('api.get_sale', id=self.id),
+                'product_type': url_for('api.product_types', id=self.product_type_id),
+                'product_series': url_for('api.product_series', id=self.product_series_id)
+            }
+        }
+        return data
+    def from_dict(self, data):
+        for field in ['event_id', 'user_id', 'date', 'discount', 'notes']:
+            if field in data:
+                setattr(self, field, data[field])
 
-class SaleLineItem(db.Model):
+class SaleLineItem(PaginatedAPIMixin, db.Model):
     """The intersection between a Sale and Products"""
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
     sale_id = db.Column(db.Integer, db.ForeignKey('sale.id'), nullable=False)
-    sale_price = db.Column(db.Numeric(7, 2))
+    sale_price = db.Column(db.Numeric(7, 2), nullable=False)
     def __repr__(self):
         return '<SaleLineItem {}>'.format(self.id)
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'product_id': self.product_id,
+            'sale_id': self.sale_id,
+            'sale_price': self.sale_price,
+            '_links': {
+                'self': url_for('api.get_sale', id=self.id),
+                'product': url_for('api.product', id=self.product_id),
+            }
+        }
+        return data
+    def from_dict(self, data):
+        for field in ['product_id', 'sale_id', 'sale_price']:
+            if field in data:
+                setattr(self, field, data[field])
