@@ -29,7 +29,7 @@ def create_sale():
     db.session.add(sale)
     db.session.commit()
     response = jsonify(sale.to_dict())
-    response.status_coe = 201
+    response.status_code = 201
     response.headers['Location'] = url_for('api.get_sale', id=sale.id)
     return response
 
