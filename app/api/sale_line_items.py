@@ -15,7 +15,7 @@ def get_sale_line_item(id):
 def get_sale_line_items():
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
-    data = SaleLineItem.to_collection_dict(SaleLineItem.query, page, per_page, 'api.get_sales')
+    data = SaleLineItem.to_collection_dict(SaleLineItem.query, page, per_page, 'api.get_sale_line_items')
     return jsonify(data)
 
 @bp.route('/sale_line_items', methods=['POST'])
