@@ -142,8 +142,8 @@ class Sale(PaginatedAPIMixin, db.Model):
             'notes': self.notes,
             '_links': {
                 'self': url_for('api.get_sale', id=self.id),
-                'event': url_for('api.events', id=self.event_id),
-                'user': url_for('api.users', id=self.user_id)
+                'event': url_for('api.get_event', id=self.event_id),
+                'user': url_for('api.get_user', id=self.user_id)
             }
         }
         return data
@@ -221,8 +221,8 @@ class Product(PaginatedAPIMixin, db.Model):
             'price': self.price,
             '_links': {
                 'self': url_for('api.get_sale', id=self.id),
-                'product_type': url_for('api.product_types', id=self.product_type_id),
-                'product_series': url_for('api.product_series', id=self.product_series_id)
+                'product_type': url_for('api.get_product_type', id=self.product_type_id),
+                'product_series': url_for('api.get_product_series', id=self.product_series_id)
             }
         }
         return data
@@ -247,7 +247,7 @@ class SaleLineItem(PaginatedAPIMixin, db.Model):
             'sale_price': self.sale_price,
             '_links': {
                 'self': url_for('api.get_sale', id=self.id),
-                'product': url_for('api.product', id=self.product_id),
+                'product': url_for('api.get_product', id=self.product_id),
             }
         }
         return data

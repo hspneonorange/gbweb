@@ -15,7 +15,7 @@ def get_event(id):
 def get_events():
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
-    data = Event.to_collection_dict(Event.query, page, per_page, 'api.get_events')
+    data = Event.to_collection_dict(Event.query, page, per_page, 'api.get_event')
     return jsonify(data)
 
 @bp.route('/events', methods=['POST'])
