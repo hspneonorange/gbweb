@@ -45,3 +45,11 @@ def update_user(id):
     user.from_dict(data, new_user=False)
     db.session.commit()
     return jsonify(user.to_dict())
+
+@bp.route('/users/<int:id>', methods=['DELETE'])
+@token_auth.login_required
+def delete_user(id):
+    user = User.query.get_or_404(id)
+    db.session.delete(user)
+    db.session.commit()
+    return '', 204

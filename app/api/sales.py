@@ -41,3 +41,11 @@ def update_sale(id):
     sale.from_dict(data)
     db.session.commit()
     return jsonify(sale.to_dict())
+
+@bp.route('/sales/<int:id>', methods=['DELETE'])
+@token_auth.login_required
+def delete_sale(id):
+    sale = Sale.query.get_or_404(id)
+    db.session.delete(sale)
+    db.session.commit()
+    return '', 204

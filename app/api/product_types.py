@@ -45,3 +45,11 @@ def update_product_type(id):
     product_type.from_dict(data)
     db.session.commit()
     return jsonify(product_type.to_dict())
+
+@bp.route('/product_types/<int:id>', methods=['DELETE'])
+@token_auth.login_required
+def delete_product_type(id):
+    product_type = ProductType.query.get_or_404(id)
+    db.session.delete(product_type)
+    db.session.commit()
+    return '', 204

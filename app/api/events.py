@@ -45,3 +45,11 @@ def update_event(id):
     event.from_dict(data)
     db.session.commit()
     return jsonify(event.to_dict())
+
+@bp.route('/events/<int:id>', methods=['DELETE'])
+@token_auth.login_required
+def delete_event(id):
+    event = Event.query.get_or_404(id)
+    db.session.delete(event)
+    db.session.commit()
+    return '', 204

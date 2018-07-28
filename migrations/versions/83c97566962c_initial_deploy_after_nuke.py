@@ -1,8 +1,8 @@
 """Initial deploy (after nuke)
 
-Revision ID: 92da77bae7e5
+Revision ID: 83c97566962c
 Revises: 
-Create Date: 2018-07-14 19:36:02.279116
+Create Date: 2018-07-27 21:30:01.162462
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '92da77bae7e5'
+revision = '83c97566962c'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -66,7 +66,7 @@ def upgrade():
     sa.Column('description', sa.String(length=256), nullable=True),
     sa.Column('notes', sa.String(length=1024), nullable=True),
     sa.Column('stock', sa.Integer(), nullable=False),
-    sa.Column('price', sa.Numeric(precision=7, scale=2), nullable=False),
+    sa.Column('price', sa.DECIMAL(precision=5, scale=2), nullable=False),
     sa.ForeignKeyConstraint(['product_series_id'], ['product_series.id'], ),
     sa.ForeignKeyConstraint(['product_type_id'], ['product_type.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -78,7 +78,7 @@ def upgrade():
     sa.Column('event_id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('date', sa.DateTime(), nullable=False),
-    sa.Column('discount', sa.Numeric(precision=7, scale=2), nullable=True),
+    sa.Column('discount', sa.DECIMAL(precision=5, scale=2), nullable=True),
     sa.Column('notes', sa.String(length=256), nullable=True),
     sa.ForeignKeyConstraint(['event_id'], ['event.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
@@ -89,7 +89,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('product_id', sa.Integer(), nullable=False),
     sa.Column('sale_id', sa.Integer(), nullable=False),
-    sa.Column('sale_price', sa.Numeric(precision=7, scale=2), nullable=True),
+    sa.Column('sale_price', sa.DECIMAL(precision=5, scale=2), nullable=False),
     sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
     sa.ForeignKeyConstraint(['sale_id'], ['sale.id'], ),
     sa.PrimaryKeyConstraint('id')
