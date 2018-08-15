@@ -127,7 +127,8 @@ class Sale(PaginatedAPIMixin, db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     date = db.Column(db.DateTime, index=True, default=datetime.utcnow, nullable=False)
-    discount = db.Column(db.DECIMAL(5, 2, asdecimal=True)) #.Numeric(7, 2))
+#    discount = db.Column(db.DECIMAL(5, 2, asdecimal=True)) #.Numeric(7, 2))
+    discount = db.Column(db.Float) #.Numeric(7, 2))
     notes = db.Column(db.String(256))
     saleslineitems = db.relationship('SaleLineItem', backref='sale', lazy='dynamic')
     def __repr__(self):
@@ -204,7 +205,8 @@ class Product(PaginatedAPIMixin, db.Model):
     description = db.Column(db.String(256))
     notes = db.Column(db.String(1024))
     stock = db.Column(db.Integer, nullable=False, default=0)
-    price = db.Column(db.DECIMAL(5, 2, asdecimal=True), nullable=False) #.Numeric(7, 2), nullable=False)
+#    price = db.Column(db.DECIMAL(5, 2, asdecimal=True), nullable=False) #.Numeric(7, 2), nullable=False)
+    price = db.Column(db.Float, nullable=False) #.Numeric(7, 2), nullable=False)
     saleslineitems = db.relationship('SaleLineItem', backref='product', lazy='dynamic')
     def __repr__(self):
         return '<Product {}, ${}; {} in stock>'.format(self.name, self.price, self.stock)
@@ -236,7 +238,8 @@ class SaleLineItem(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
     sale_id = db.Column(db.Integer, db.ForeignKey('sale.id'), nullable=False)
-    sale_price = db.Column(db.DECIMAL(5, 2, asdecimal=True), nullable=False) #.Numeric(7, 2), nullable=False)
+#    sale_price = db.Column(db.DECIMAL(5, 2, asdecimal=True), nullable=False) #.Numeric(7, 2), nullable=False)
+    sale_price = db.Column(db.Float, nullable=False) #.Numeric(7, 2), nullable=False)
     def __repr__(self):
         return '<SaleLineItem {}>'.format(self.id)
     def to_dict(self):
