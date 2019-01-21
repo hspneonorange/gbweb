@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, DateField, SelectField, TextAreaField
 from wtforms.validators import DataRequired, EqualTo, ValidationError, Optional
-from app.models import User, Event, ProductSeries, ProductType, Product, Sale, SaleLineItem
+from app.models import User, Event, ProductSeries, ProductType, Product, Sale, SaleLineItem, Commission
 
 # TODO: Validators for length on every text type field
 class LoginForm(FlaskForm):

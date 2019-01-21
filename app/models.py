@@ -44,6 +44,7 @@ class User(PaginatedAPIMixin, UserMixin, db.Model):
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
     sales = db.relationship('Sale', backref='user', lazy='dynamic')
+    commissions = db.relationship('Commission', backref='user', lazy='dynamic')
     def __repr__(self):
         return '<Employee {}: {}, {}>'.format(self.username, self.last_name, self.first_name)
     def set_password(self, password):
@@ -100,6 +101,7 @@ class Event(PaginatedAPIMixin, db.Model):
     city = db.Column(db.String(50), index=True)
     state_abbr = db.Column(db.String(2), index=True)
     sales = db.relationship('Sale', backref='event', lazy='dynamic')
+    commissions = db.relationship('Commission', backref='event', lazy='dynamic')
     def __repr__(self):
         return '<Event {}: {}, {} @ {}-{}>'.format(self.name, self.city, \
             self.state_abbr, self.start_date, self.end_date)
@@ -202,7 +204,7 @@ class Product(PaginatedAPIMixin, db.Model):
     name = db.Column(db.String(50), index=True, nullable=False)
     sku = db.Column(db.String(8), index=True)
     description = db.Column(db.String(256))
-    notes = db.Column(db.String(1024))
+    keywords = db.Column(db.String(1024))
     stock = db.Column(db.Integer, nullable=False, default=0)
     price = db.Column(db.Float, nullable=False) #.Numeric(7, 2), nullable=False)
     saleslineitems = db.relationship('SaleLineItem', backref='product', lazy='dynamic')
@@ -216,7 +218,7 @@ class Product(PaginatedAPIMixin, db.Model):
             'name': self.name,
             'sku': self.sku,
             'description': self.description,
-            'notes': self.notes,
+            'keywords': self.keywords,
             'stock': self.stock,
             'price': self.price,
             '_links': {
@@ -227,7 +229,7 @@ class Product(PaginatedAPIMixin, db.Model):
         }
         return data
     def from_dict(self, data):
-        for field in ['product_type_id', 'product_series_id', 'name', 'sku', 'description', 'notes', 'stock', 'price']:
+        for field in ['product_type_id', 'product_series_id', 'name', 'sku', 'description', 'keywords', 'stock', 'price']:
             if field in data:
                 setattr(self, field, data[field])
 
@@ -253,5 +255,51 @@ class SaleLineItem(PaginatedAPIMixin, db.Model):
         return data
     def from_dict(self, data):
         for field in ['product_id', 'sale_id', 'sale_price']:
+            if field in data:
+                setattr(self, field, data[field])
+
+class Commission(PaginatedAPIMixin, db.Model):
+    """Commissions table"""
+    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    datetime_recorded = db.Column(db.DateTime, index=True, default=datetime.utcnow, nullable=False)
+    commissioner_name = db.Column(db.String(50), nullable=False)
+    commissioner_email = db.Column(db.String(50), nullable=False)
+    commissioner_phone = db.Column(db.String(10))
+    street_address = db.Column(db.String(50))
+    address_city = db.Column(db.String(50))
+    address_state_abbr = db.Column(db.String(2))
+    address_zip = db.Column(db.String(9))
+    commission_details = db.Column(db.String(1024), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    completed = db.Column(db.Boolean)
+    def __repr__(self):
+        return '<Commission {}>'.format(self.id)
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'event_id': self.event_id,
+            'user_id': self.employee_id,
+            'datetime_recorded': self.datetime_recorded,
+            'commissioner_name': self.commissioner_name,
+            'commissioner_email': self.commissioner_email,
+            'commissioner_phone': self.commissioner_phone,
+            'street_address': self.street_address,
+            'address_city': self.address_city,
+            'address_state_abbr': self.address_state_abbr,
+            'address_zip': self.address_zip,
+            'commission_details': self.commission_details,
+            'price': self.price,
+            'completed': self.completed,
+            '_links': {
+                'self': url_for('api.get_commission',id=self.id),
+                'event': url_for('api.get_event', id=self.event_id),
+                'employee': url_for('api.get_user', id=self.user_id)
+            }
+        }
+        return data
+    def from_dict(self, data):
+        for field in ['event_id','user_id','datetime_recorded','commissioner_name','commissioner_email','commissioner_phone','street_address','address_city','address_state_abbr','address_zip','commission_details','price','completed']:
             if field in data:
                 setattr(self, field, data[field])
