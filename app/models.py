@@ -15,8 +15,8 @@ def load_user(id):
 
 class PaginatedAPIMixin(object):
     @staticmethod
-    def to_collection_dict(query, page, per_page, filter_by, endpoint, **kwargs):
-        resources = query.filter_by(filter_by).paginate(page, per_page, False) if filter_by else resources = query.paginate(page, per_page, False)
+    def to_collection_dict(query, page, per_page, endpoint, **kwargs):
+        resources = query.paginate(page, per_page, False)
         data = {
             'items': [item.to_dict() for item in resources.items],
             '_meta': {
