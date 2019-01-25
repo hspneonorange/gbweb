@@ -203,7 +203,7 @@ class Product(PaginatedAPIMixin, db.Model):
     product_series_id = db.Column(db.Integer, db.ForeignKey('product_series.id'), nullable=False)
     name = db.Column(db.String(50), index=True, nullable=False)
     sku = db.Column(db.String(8), index=True)
-    description = db.Column(db.String(256))
+    image_link = db.Column(db.String(256))
     keywords = db.Column(db.String(1024))
     stock = db.Column(db.Integer, nullable=False, default=0)
     price = db.Column(db.Float, nullable=False) #.Numeric(7, 2), nullable=False)
@@ -217,7 +217,7 @@ class Product(PaginatedAPIMixin, db.Model):
             'product_series_id': self.product_series_id,
             'name': self.name,
             'sku': self.sku,
-            'description': self.description,
+            'image_link': self.image_link,
             'keywords': self.keywords,
             'stock': self.stock,
             'price': self.price,
@@ -229,7 +229,7 @@ class Product(PaginatedAPIMixin, db.Model):
         }
         return data
     def from_dict(self, data):
-        for field in ['product_type_id', 'product_series_id', 'name', 'sku', 'description', 'keywords', 'stock', 'price']:
+        for field in ['product_type_id', 'product_series_id', 'name', 'sku', 'image_link', 'keywords', 'stock', 'price']:
             if field in data:
                 setattr(self, field, data[field])
 
@@ -237,6 +237,7 @@ class SaleLineItem(PaginatedAPIMixin, db.Model):
     """The intersection between a Sale and Products"""
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    num_sold=db.Column(db.Integer)
     sale_id = db.Column(db.Integer, db.ForeignKey('sale.id'), nullable=False)
     sale_price = db.Column(db.Float, nullable=False) #.Numeric(7, 2), nullable=False)
     def __repr__(self):
@@ -273,6 +274,7 @@ class Commission(PaginatedAPIMixin, db.Model):
     address_zip = db.Column(db.String(9))
     commission_details = db.Column(db.String(1024), nullable=False)
     price = db.Column(db.Float, nullable=False)
+    paid = db.Column(db.Boolean)
     completed = db.Column(db.Boolean)
     def __repr__(self):
         return '<Commission {}>'.format(self.id)
@@ -291,6 +293,7 @@ class Commission(PaginatedAPIMixin, db.Model):
             'address_zip': self.address_zip,
             'commission_details': self.commission_details,
             'price': self.price,
+            'paid': self.paid,
             'completed': self.completed,
             '_links': {
                 'self': url_for('api.get_commission',id=self.id),
@@ -300,6 +303,6 @@ class Commission(PaginatedAPIMixin, db.Model):
         }
         return data
     def from_dict(self, data):
-        for field in ['event_id','user_id','datetime_recorded','commissioner_name','commissioner_email','commissioner_phone','street_address','address_city','address_state_abbr','address_zip','commission_details','price','completed']:
+        for field in ['event_id','user_id','datetime_recorded','commissioner_name','commissioner_email','commissioner_phone','street_address','address_city','address_state_abbr','address_zip','commission_details','price','paid','completed']:
             if field in data:
                 setattr(self, field, data[field])

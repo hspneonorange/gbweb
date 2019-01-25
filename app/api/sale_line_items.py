@@ -22,7 +22,7 @@ def get_sale_line_items():
 @token_auth.login_required
 def create_sale_line_item():
     data = request.get_json() or {}
-    if 'product_id' not in data or 'sale_id' not in data or 'sale_price' not in data:
+    if 'product_id' not in data or 'sale_id' not in data or 'sale_price' not in data or 'num_sold' not in data:
         return bad_request('Must include product_id, sale_id, and sale_price fields.')
     sli = SaleLineItem()
     sli.from_dict(data)

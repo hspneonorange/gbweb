@@ -1,8 +1,8 @@
-"""Initial deploy (after nuke)
+"""empty message
 
-Revision ID: ee967db16e95
+Revision ID: 73c178f44a0f
 Revises: 
-Create Date: 2018-08-15 06:18:41.478939
+Create Date: 2019-01-25 15:36:19.277472
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'ee967db16e95'
+revision = '73c178f44a0f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -57,14 +57,35 @@ def upgrade():
     sa.UniqueConstraint('username')
     )
     op.create_index(op.f('ix_user_token'), 'user', ['token'], unique=True)
+    op.create_table('commission',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('event_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('datetime_recorded', sa.DateTime(), nullable=False),
+    sa.Column('commissioner_name', sa.String(length=50), nullable=False),
+    sa.Column('commissioner_email', sa.String(length=50), nullable=False),
+    sa.Column('commissioner_phone', sa.String(length=10), nullable=True),
+    sa.Column('street_address', sa.String(length=50), nullable=True),
+    sa.Column('address_city', sa.String(length=50), nullable=True),
+    sa.Column('address_state_abbr', sa.String(length=2), nullable=True),
+    sa.Column('address_zip', sa.String(length=9), nullable=True),
+    sa.Column('commission_details', sa.String(length=1024), nullable=False),
+    sa.Column('price', sa.Float(), nullable=False),
+    sa.Column('paid', sa.Boolean(), nullable=True),
+    sa.Column('completed', sa.Boolean(), nullable=True),
+    sa.ForeignKeyConstraint(['event_id'], ['event.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_commission_datetime_recorded'), 'commission', ['datetime_recorded'], unique=False)
     op.create_table('product',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('product_type_id', sa.Integer(), nullable=False),
     sa.Column('product_series_id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=50), nullable=False),
     sa.Column('sku', sa.String(length=8), nullable=True),
-    sa.Column('description', sa.String(length=256), nullable=True),
-    sa.Column('notes', sa.String(length=1024), nullable=True),
+    sa.Column('image_link', sa.String(length=256), nullable=True),
+    sa.Column('keywords', sa.String(length=1024), nullable=True),
     sa.Column('stock', sa.Integer(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
     sa.ForeignKeyConstraint(['product_series_id'], ['product_series.id'], ),
@@ -88,6 +109,7 @@ def upgrade():
     op.create_table('sale_line_item',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('product_id', sa.Integer(), nullable=False),
+    sa.Column('num_sold', sa.Integer(), nullable=True),
     sa.Column('sale_id', sa.Integer(), nullable=False),
     sa.Column('sale_price', sa.Float(), nullable=False),
     sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
@@ -105,6 +127,8 @@ def downgrade():
     op.drop_index(op.f('ix_product_sku'), table_name='product')
     op.drop_index(op.f('ix_product_name'), table_name='product')
     op.drop_table('product')
+    op.drop_index(op.f('ix_commission_datetime_recorded'), table_name='commission')
+    op.drop_table('commission')
     op.drop_index(op.f('ix_user_token'), table_name='user')
     op.drop_table('user')
     op.drop_index(op.f('ix_product_type_name'), table_name='product_type')
