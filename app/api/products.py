@@ -15,8 +15,13 @@ def get_product(id):
 def get_products():
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
-    filter_by = request.args.get('filter_by', None, type=str)
-    data = Product.to_collection_dict(Product.query, page, per_page, filter_by, 'api.get_products')
+    search = request.args.get('search', None, type=str)
+    if search != "":
+        print("HEY!!!")
+        data = Product.to_collection_dict(Product.query.filter(Product.keywords.like("%" + search + "%")), page, per_page, 'api.get_products')
+#        data = Product.to_collection_dict(Product.query.filter_by(Product.keywords.like("%" + search + "%")), page, per_page, 'api.get_products')
+    else:
+        data = Product.to_collection_dict(Product.query, page, per_page, 'api.get_products')
     return jsonify(data)
 
 @bp.route('/products', methods=['POST'])
