@@ -16,3 +16,8 @@ def revoke_token():
     g.current_user.revoke_token()
     db.session.commit()
     return '', 204
+
+@bp.route('/tokens', methods=['GET'])
+@token_auth.login_required
+def validate_token():
+    return '', 200

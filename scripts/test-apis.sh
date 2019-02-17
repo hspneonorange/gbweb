@@ -3,6 +3,7 @@
 gb_un=bryandowen
 gb_pw=[stbil
 authz="Authorization:Bearer `http --auth $gb_un:$gb_pw POST http://localhost:5000/api/tokens | jq -r .token `"
+http --auth $gb_un:$gb_pw POST http://localhost:5000/api/tokens
 
 # POST
 # PUT w/ id
