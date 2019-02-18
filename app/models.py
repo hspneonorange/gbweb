@@ -127,7 +127,7 @@ class Sale(PaginatedAPIMixin, db.Model):
     """Models a 'sale' as an abstract entity, to which one or more SaleLineItems are attached"""
     id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     date = db.Column(db.DateTime, index=True, default=datetime.utcnow, nullable=False)
     discount = db.Column(db.Float) #.Numeric(7, 2))
     notes = db.Column(db.String(256))
@@ -239,7 +239,7 @@ class SaleLineItem(PaginatedAPIMixin, db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
     num_sold=db.Column(db.Integer)
     sale_id = db.Column(db.Integer, db.ForeignKey('sale.id'), nullable=False)
-    sale_price = db.Column(db.Float, nullable=False) #.Numeric(7, 2), nullable=False)
+    sale_price = db.Column(db.Float) #.Numeric(7, 2), nullable=False)
     def __repr__(self):
         return '<SaleLineItem {}>'.format(self.id)
     def to_dict(self):

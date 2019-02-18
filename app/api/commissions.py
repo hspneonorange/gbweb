@@ -22,7 +22,7 @@ def get_commissions():
 @token_auth.login_required
 def create_commission():
     data = request.get_json() or {}
-    if 'event_id' not in data or 'user_id' not in data or 'price' not in data or 'datetime_recorded' not in data or 'commissioner_name' not in data or 'commissioner_email' not in data or 'commission_details' not in data or 'price' not in data:
+    if 'event_id' not in data or 'user_id' not in data or 'price' not in data or 'datetime_recorded' not in data or 'commissioner_name' not in data or 'commissioner_email' not in data or 'commission_details' not in data or 'price' not in data or 'paid' not in data or 'completed' not in data:
         return bad_request('Must include product_id, sale_id, and sale_price fields.')
     c = Commission()
     c.from_dict(data)
