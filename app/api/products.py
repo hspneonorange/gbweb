@@ -17,9 +17,7 @@ def get_products():
     per_page = min(request.args.get('per_page', 10, type=int), 100)
     search = request.args.get('search', None, type=str)
     if search != "":
-        print("HEY!!!")
         data = Product.to_collection_dict(Product.query.filter(Product.keywords.like("%" + search + "%")), page, per_page, 'api.get_products')
-#        data = Product.to_collection_dict(Product.query.filter_by(Product.keywords.like("%" + search + "%")), page, per_page, 'api.get_products')
     else:
         data = Product.to_collection_dict(Product.query, page, per_page, 'api.get_products')
     return jsonify(data)

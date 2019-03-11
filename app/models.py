@@ -215,6 +215,8 @@ class Product(PaginatedAPIMixin, db.Model):
             'id': self.id,
             'product_type_id': self.product_type_id,
             'product_series_id': self.product_series_id,
+            'product_series': self.product_series.name,
+            'product_type': self.product_type.name,
             'name': self.name,
             'sku': self.sku,
             'image_link': self.image_link,
