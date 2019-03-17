@@ -284,7 +284,7 @@ class Commission(PaginatedAPIMixin, db.Model):
         data = {
             'id': self.id,
             'event_id': self.event_id,
-            'user_id': self.employee_id,
+            'user_id': self.user_id,
             'datetime_recorded': self.datetime_recorded,
             'commissioner_name': self.commissioner_name,
             'commissioner_email': self.commissioner_email,

@@ -22,6 +22,18 @@ def get_products():
         data = Product.to_collection_dict(Product.query, page, per_page, 'api.get_products')
     return jsonify(data)
 
+@bp.route('/products/id_search', methods=['GET'])
+@token_auth.login_required
+def get_products_by_id():
+    page = request.args.get('page', 1, type=int)
+    per_page = min(request.args.get('per_page', 10, type=int), 100)
+    search_id = request.args.get('search', None, type=str)
+    if search_id != "":
+        data = Product.to_collection_dict(Product.query.filter(Product.id.like(search_id)), page, per_page, 'api.get_products')
+    else:
+        data = Product.to_collection_dict(Product.query, page, per_page, 'api.get_products')
+    return jsonify(data)
+
 @bp.route('/products', methods=['POST'])
 @token_auth.login_required
 def create_product():
