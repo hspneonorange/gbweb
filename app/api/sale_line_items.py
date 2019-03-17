@@ -28,6 +28,7 @@ def create_sale_line_item():
     sli.from_dict(data)
     db.session.add(sli)
     db.session.commit()
+    # Decrement stock in products table by [num_sold]
     response = jsonify(sli.to_dict())
     response.status_code = 201
     response.headers['Location'] = url_for('api.get_sale_line_item', id=sli.id)
