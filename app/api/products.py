@@ -34,6 +34,14 @@ def get_products_by_id():
         data = Product.to_collection_dict(Product.query, page, per_page, 'api.get_products')
     return jsonify(data)
 
+@bp.route('/products/low_stock', methods=['GET'])
+@token_auth.login_required
+def get_products_by_stock():
+    page = request.args.get('page', 1, type=int)
+    per_page = min(request.args.get('per_page', 50, type=int), 100)
+    data = Product.to_collection_dict(Product.query.order_by(Product.stock, Product.product_series_id, Product.name).filter(Product.product_type_id==1), page, per_page, 'api.get_products')
+    return jsonify(data)
+
 @bp.route('/products', methods=['POST'])
 @token_auth.login_required
 def create_product():
