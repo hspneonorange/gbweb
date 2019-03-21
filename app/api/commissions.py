@@ -21,26 +21,17 @@ def get_commissions():
 @bp.route('/commissions', methods=['POST'])
 @token_auth.login_required
 def create_commission():
-    print('in create_commission')
     data = request.get_json() or {}
-    print('hhh')
     if 'event_id' not in data or 'user_id' not in data or 'datetime_recorded' not in data or 'commissioner_name' not in data or 'commissioner_email' not in data or 'commission_details' not in data or 'price' not in data or 'paid' not in data or 'completed' not in data:
         print('after if')
         return bad_request('Must include product_id, sale_id, and sale_price fields.') ## did this get directly copied from sale_line_item? FIX THIS LMAOOOO
-    print('past required fields')
     c = Commission()
     c.from_dict(data)
-    print('c.from_dict(data)')
     db.session.add(c)
-    print('db.session.add(c)')
     db.session.commit()
-    print('db.session.commit')
     response = jsonify(c.to_dict())
-    print('response = jsonify(c.to_dict())')
     response.status_code = 201
-    print('response.status_code = 201')
     response.headers['Location'] = url_for('api.get_commission', id=c.id)
-    print('response.header whatever lol')
     return response
 
 @bp.route('/commissions/<int:id>', methods=['PUT'])

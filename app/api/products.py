@@ -66,6 +66,29 @@ def update_product(id):
     db.session.commit()
     return jsonify(product.to_dict())
 
+@bp.route('/products/stock/<int:product_id>/<int:stock_update>', methods=['PUT'])
+@token_auth.login_required
+def update_stock(product_id, stock_update): ## id, stock_update and put in url if all else fails???? lol
+    print('in update_stock')
+    ## search = request.args.get('search', None, type=str)
+    action = request.args.get('action', None, type=str)
+    product = Product.query.get_or_404(product_id)
+    print('product = Product.query.get_or_404(product_id)')
+    ## stock_update = request.args.get('stock_update')
+    ## if stock_update != "":
+    if action == 'increment':
+        product.stock += stock_update
+        print('product.stock += stock_update')
+    elif action == 'decrement':
+        product.stock -= stock_update
+        print('product.stock -= stock_update')
+    else:
+        print('This should never happen')
+    ## product.from_dict(data)
+    db.session.commit()
+    print('db.session.commit()')
+    return jsonify(product.stock, product.to_dict())
+
 @bp.route('/products/<int:id>', methods=['DELETE'])
 @token_auth.login_required
 def delete_product(id):
