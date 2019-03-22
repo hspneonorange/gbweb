@@ -18,8 +18,16 @@ def get_sales():
     data = Sale.to_collection_dict(Sale.query, page, per_page, 'api.get_sales')
     return jsonify(data)
 
-@bp.route('/sales', methods=['POST'])
+@bp.route('/sales/<int:user_id>/<int:event_id>', methods=['GET'])
 @token_auth.login_required
+def get_user_event_sales(user_id, event_id):
+    page = request.args.get('page', 1, type=int)
+    per_page = min(request.args.get('per_page', 20, type=int), 100)
+    data = Sale.to_collection_dict(Sale.query.order_by(Sale.date).filter(Sale.user_id.like(user_id)).filter(Sale.user_id.like(event_id)), page, per_page, 'api.get_sales')
+    return jsonify(data)
+
+@bp.route('/sales', methods=['POST'])
+@token_auth.login_required 
 def create_sale():
     data = request.get_json() or {}
     if 'event_id' not in data or 'user_id' not in data or 'date' not in data:
