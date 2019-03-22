@@ -248,6 +248,7 @@ class SaleLineItem(PaginatedAPIMixin, db.Model):
         data = {
             'id': self.id,
             'product_id': self.product_id,
+            'num_sold': self.num_sold,
             'sale_id': self.sale_id,
             'sale_price': self.sale_price,
             '_links': {
@@ -257,7 +258,7 @@ class SaleLineItem(PaginatedAPIMixin, db.Model):
         }
         return data
     def from_dict(self, data):
-        for field in ['product_id', 'sale_id', 'sale_price']:
+        for field in ['product_id', 'sale_id', 'sale_price', 'num_sold']:
             if field in data:
                 setattr(self, field, data[field])
 
