@@ -14,7 +14,7 @@ def get_event(id):
 @token_auth.login_required
 def get_events():
     page = request.args.get('page', 1, type=int)
-    per_page = min(request.args.get('per_page', 10, type=int), 100)
+    per_page = min(request.args.get('per_page', 20, type=int), 100)
     data = Event.to_collection_dict(Event.query, page, per_page, 'api.get_events')
     return jsonify(data)
 
