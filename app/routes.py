@@ -1,10 +1,11 @@
 from app import app
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, send_from_directory
 from flask_login import current_user, login_required
 from app.auth import routes
 from app import routes, gbforms
 from app.gbforms import EventForm
 from app.models import Event
+import os
 
 @app.route('/')
 @app.route('/index')
@@ -13,6 +14,13 @@ def index():
     if current_user.is_authenticated:
         return redirect(url_for('auth.index'))
     return render_template('index.html', title='Home', user=current_user)
+
+@app.route('/images/<path>/<filename>')
+def send_image(path, filename):
+    #root_dir = os.path.dirname(os.getcwd())
+    full_dir = os.path.join(app.root_path.replace('/app', ''), 'images', path)
+    print(full_dir)
+    return send_from_directory(full_dir, filename)
 
 @app.route('/admin')
 @login_required
