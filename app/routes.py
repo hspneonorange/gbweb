@@ -17,7 +17,6 @@ def index():
 
 @app.route('/images/<path>/<filename>')
 def send_image(path, filename):
-    #root_dir = os.path.dirname(os.getcwd())
     full_dir = os.path.join(app.root_path.replace('/app', ''), 'images', path)
     print(full_dir)
     return send_from_directory(full_dir, filename)
