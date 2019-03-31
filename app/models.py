@@ -301,7 +301,7 @@ class Commission(PaginatedAPIMixin, db.Model):
             'amt_paid': self.amt_paid,
             'completed': self.completed,
             '_links': {
-                'self': url_for('api.get_commission',id=self.id),
+                'self': url_for('api.get_commission', id=self.id),
                 'event': url_for('api.get_event', id=self.event_id),
                 'employee': url_for('api.get_user', id=self.user_id)
             }
@@ -309,5 +309,34 @@ class Commission(PaginatedAPIMixin, db.Model):
         return data
     def from_dict(self, data):
         for field in ['event_id','user_id','datetime_recorded','commissioner_name','commissioner_email','commissioner_phone','street_address','address_city','address_state_abbr','address_zip','commission_details','price','amt_paid','completed']:
+            if field in data:
+                setattr(self, field, data[field])
+
+class Expense(PaginatedAPIMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(256), nullable=False)
+    cost = db.Column(db.Float, nullable=False)
+    datetime_recorded = db.Column(db.DateTime, index=True, default=datetime.utcnow, nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    def __repr__(self):
+        return '<Expense {}>'.format(self.id)
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'description': self.description,
+            'cost': self.cost,
+            'datetime_recorded': self.datetime_recorded,
+            'event_id': self.event_id,
+            'user_id': self.user_id,
+            '__links': {
+                'self': url_for('api.get_expense', id=self.id),
+                'event': url_for('api.get_event', id=self.event_id),
+                'employee': url_for('api.get_user', id=self.user_id)
+            }
+        }
+        return data
+    def from_dict(self, data):
+        for field in ['id', 'description', 'cost', 'datetime_recorded', 'event_id', 'user_id']:
             if field in data:
                 setattr(self, field, data[field])
