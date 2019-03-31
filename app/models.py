@@ -131,7 +131,7 @@ class Sale(PaginatedAPIMixin, db.Model):
     date = db.Column(db.DateTime, index=True, default=datetime.utcnow, nullable=False)
     discount = db.Column(db.Float) #.Numeric(7, 2))
     notes = db.Column(db.String(256))
-    saleslineitems = db.relationship('SaleLineItem', backref='sale', lazy='dynamic')
+    salelineitems = db.relationship('SaleLineItem', backref='sale', lazy='dynamic')
     def __repr__(self):
         return '<Sale {}, {}>'.format(self.id, self.date)
     def to_dict(self):
