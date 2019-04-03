@@ -22,7 +22,7 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 admin = Admin(app, name='Glasses Brigade', template_mode='bootstrap3')
 
-from app.models import User, Event, Sale, ProductSeries, ProductType, Product, SaleLineItem, Commission
+from app.models import User, Event, Sale, ProductSeries, ProductType, Product, SaleLineItem, Commission, Expense
 admin.add_view(ModelView(User, db.session))
 admin.add_view(ModelView(Event, db.session))
 admin.add_view(ModelView(Sale, db.session))
@@ -31,6 +31,7 @@ admin.add_view(ModelView(ProductType, db.session))
 admin.add_view(ModelView(Product, db.session))
 admin.add_view(ModelView(SaleLineItem, db.session))
 admin.add_view(ModelView(Commission, db.session))
+admin.add_view(ModelView(Expense, db.session))
 
 from app.errors import bp as errors_bp
 app.register_blueprint(errors_bp, url_prefix='/errors')

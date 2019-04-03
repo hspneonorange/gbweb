@@ -2,7 +2,7 @@
 from wtforms_alchemy import model_form_factory
 from wtforms import SubmitField
 from flask_wtf import FlaskForm
-from app.models import User, Event, Sale, ProductType, ProductSeries, Product, SaleLineItem, Commission
+from app.models import User, Event, Sale, ProductType, ProductSeries, Product, SaleLineItem, Commission, Expense
 
 ModelForm = model_form_factory(FlaskForm)
 
@@ -37,3 +37,7 @@ class SaleLineItemForm(ModelForm):
 class CommissionForm(ModelForm):
     class Meta:
         model = Commission
+
+class ExpenseForm(ModelForm):
+    class Meta:
+        model = Expense
