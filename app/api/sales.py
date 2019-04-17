@@ -23,7 +23,7 @@ def get_sales():
 def get_user_event_sales(user_id, event_id):
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 20, type=int), 100)
-    data = Sale.to_collection_dict(Sale.query.order_by(Sale.date).filter(Sale.user_id.like(user_id)).filter(Sale.user_id.like(event_id)), page, per_page, 'api.get_sales')
+    data = Sale.to_collection_dict(Sale.query.filter(Sale.user_id == user_id).filter(Sale.event_id == event_id), page, per_page, 'api.get_user_event_sales', user_id=user_id, event_id=event_id)
     return jsonify(data)
 
 @bp.route('/sales', methods=['POST'])
