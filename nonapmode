@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sudo systemctl disable hostapd
+sudo systemctl disable dnsmasq
+sudo cp /etc/dhcpcd.conf.nonap /etc/dhcpcd.conf
+sudo reboot now
