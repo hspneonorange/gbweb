@@ -1,9 +1,10 @@
 from app.api import bp
 from flask import jsonify, request, url_for
-from app.models import Product
+from app.models import Product, SaleLineItem, Sale
 from app import db
 from app.api.errors import bad_request
 from app.api.auth import token_auth
+import simplejson as json
 
 @bp.route('/products/<int:id>', methods=['GET'])
 @token_auth.login_required
@@ -41,6 +42,13 @@ def get_products_by_stock():
     per_page = min(request.args.get('per_page', 50, type=int), 100)
     data = Product.to_collection_dict(Product.query.order_by(Product.stock, Product.product_series_id, Product.name).filter(Product.product_type_id==1), page, per_page, 'api.get_products')
     return jsonify(data)
+
+@bp.route('/products/top_sellers/<int:event_id>', methods=['GET'])
+@token_auth.login_required
+def get_top_sellers_by_event(event_id):
+    top_sellers = db.session.execute('select p.id, p.name, sum(num_sold) as ''num_sold'' from event e join sale s on e.id = s.event_id join sale_line_item sli on s.id = sli.sale_id join product p on sli.product_id = p.id where e.id = 14 group by p.id, p.name order by sum(num_sold) desc, p.name limit 50;').fetchall()
+    for row in top_sellers:
+        print(row)
 
 @bp.route('/products', methods=['POST'])
 @token_auth.login_required

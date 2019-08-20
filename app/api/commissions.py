@@ -45,8 +45,16 @@ def create_commission():
 @bp.route('/commissions/<int:id>', methods=['PUT'])
 @token_auth.login_required
 def update_commission(id):
-    sli = Commission.query.get_or_404(id)
+    commission = Commission.query.get_or_404(id)
     data = request.get_json() or {}
-    c.from_dict(data)
+    commission.from_dict(data)
     db.session.commit()
-    return jsonify(c.to_dict())
+    return jsonify(commission.to_dict())
+
+@bp.route('/commissions/<int:id>', methods=['DELETE'])
+@token_auth.login_required
+def delete_commission(id):
+    commission = Commission.query.get_or_404(id)
+    db.session.delete(commission)
+    db.session.commit()
+    return '', 204

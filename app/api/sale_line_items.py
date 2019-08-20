@@ -42,3 +42,11 @@ def update_sale_line_item(id):
     sli.from_dict(data)
     db.session.commit()
     return jsonify(sli.to_dict())
+
+@bp.route('/sale_line_items/<int:id>', methods=['DELETE'])
+@token_auth.login_required
+def delete_sale_line_item(id):
+    sli = SaleLineItem.query.get_or_404(id)
+    db.session.delete(sli)
+    db.session.commit()
+    return '', 204
